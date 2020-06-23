@@ -1,0 +1,24 @@
+
+# this unit file will create a process that starts at system start-up 
+# to keep the app running even if the os restarts
+
+[Unit]
+Description=My gunicorn manager for first app
+After=network.target
+
+[Service]
+
+# really you should run your processes under root, instead use a user especially made for this task
+User=root
+
+# working dir should be a path pointing to the folder containing your main.py
+WorkingDirectory=/home/myApp1/
+
+# path to your python env
+Environment="PATH=/home/user1/venv/bin/"
+
+# using the process manager (gunicorn) we start uvicorn and bind the socket that nginx is going to use
+ExecStart=/home/user1/venv/bin/gunicorn --workers=1 -k uvicorn.workers.UvicornWorker --bind unix:app1.sock -m 000 app1:app
+
+[Install]
+WantedBy=multi-user.target
